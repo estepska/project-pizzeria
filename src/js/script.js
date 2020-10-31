@@ -1,4 +1,4 @@
-/* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
+  /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
 
 {
   'use strict';
@@ -52,16 +52,39 @@
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
   };
 
-  const app = {
-    init: function(){
-      const thisApp = this;
-      console.log('*** App starting ***');
-      console.log('thisApp:', thisApp);
-      console.log('classNames:', classNames);
-      console.log('settings:', settings);
-      console.log('templates:', templates);
-    },
-  };
+  class Product {
+    constructor(id, data) {
+      rendrInMenu() {
+        const thisProduct = this;
+        thisProduct.rendrInMenu();
+        console.log('new product:', thisProduct)
+      };
 
-  app.init();
+      const app = {
+        initMenu: function () {
+          const testProduct = new Product();
+          console.log('testProduct:', testProduct);
+        },
+
+        initData: function () {
+          const thisApp = this;
+
+          thisApp.data = dataSource;
+        },
+
+        init: function () {
+          const thisApp = this;
+          console.log('*** App starting ***');
+          console.log('thisApp:', thisApp);
+          console.log('classNames:', classNames);
+          console.log('settings:', settings);
+          console.log('templates:', templates);
+
+
+          thisApp.initData();
+          thisApp.initMenu();
+        },
+      },
+    }
+  }
 }
