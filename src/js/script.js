@@ -1,9 +1,9 @@
-  /* global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars
+/*global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars*/
 
 {
   'use strict';
 
-  const select = {
+const select = {
     templateOf: {
       menuProduct: '#template-menu-product',
     },
@@ -54,25 +54,78 @@
 
   class Product {
     constructor(id, data) {
-      rendrInMenu() {
-        const thisProduct = this;
-        thisProduct.rendrInMenu();
-        console.log('new product:', thisProduct)
-      };
+      const thisProduct = this;
 
-      const app = {
-        initMenu: function () {
-          const testProduct = new Product();
-          console.log('testProduct:', testProduct);
-        },
+      thisProduct.id = id;
+      thisProduct.data = data; 
 
-        initData: function () {
-          const thisApp = this;
+      thisProduct.rendrInMenu();
+      thisProduct.initAccordion();
+      console.log('new Product:', thisProduct);
+    }
+  
+    rendrInMenu() {
+      const thisProduct = this;
+      /*generate HTML based on this tamplate*/
+      const generatedHTML = temples.menuProduct(thisProduct.data);
 
-          thisApp.data = dataSource;
-        },
+      /*create element using utils*/
+      thisProduct.element = utils.createDOMFromHTML(generatedHTML);
 
-        init: function () {
+      /*find menu cosntainer*/
+      const MenuContainer = document.querySelector(select.containerOf.menu);
+
+      /*add element to menu*/
+      MenuContainer.appendChild(thisProduct.element);
+    }
+
+    initAccordion() {
+      const thisProduct = this;
+
+    /* find the clickable trigger (the element that should react to clicking) */
+
+    /* START: click event listener to trigger */
+
+      /* prevent default action for event */
+
+      /* toggle active class on element of thisProduct */
+
+      /* find all active products */
+
+      /* START LOOP: for each active product */
+
+        /* START: if the active product isn't the element of thisProduct */
+
+          /* remove class active for the active product */
+
+        /* END: if the active product isn't the element of thisProduct */
+
+      /* END LOOP: for each active product */
+
+    /* END: click event listener to trigger */
+  }
+}
+
+    }
+  }
+
+  const app = {
+    initMenu: function () {
+      const testProduct = new Product();
+      console.log('testProduct:', testProduct);
+      },
+
+      initData: function () {
+        const thisApp = this;
+
+        thisApp.data = dataSource;
+        console.log('thisApp.data:', thisApp.data);
+        for (let productData in thisApp.data.products) {
+          new Product(productData, thisApp.data.products[productData]);
+        }
+      },
+
+      init: function () {
           const thisApp = this;
           console.log('*** App starting ***');
           console.log('thisApp:', thisApp);
@@ -80,11 +133,9 @@
           console.log('settings:', settings);
           console.log('templates:', templates);
 
-
           thisApp.initData();
           thisApp.initMenu();
-        },
-      },
-    }
+    },
   }
+   app.init();
 }
