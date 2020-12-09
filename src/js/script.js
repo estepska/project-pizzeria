@@ -61,6 +61,7 @@
       thisProduct.initAccordion();
       console.log('new Product:', thisProduct);
     }
+  }
   
     renderInMenu() {
       const thisProduct = this;
@@ -76,7 +77,7 @@
       /*add element to menu*/
       MenuContainer.appendChild(thisProduct.element);
     }
-
+     
     initAccordion() {
       const thisProduct = this;
 
@@ -84,7 +85,7 @@
       this.initAccordion = thisProduct(select.menuProduct.clickable);
 
       /* START: click event listener to trigger */
-      trigger.addEventListener('click', this.initAccordion);
+      accordionTrigger.addEventListener('click', this.initAccordion);
 
       /* prevent default action for event */
       const clickableTrigger = function (event) {
@@ -118,9 +119,7 @@
   
     const app = {
       initMenu: function () {
-        const testProduct = new Product();
-        console.log('testProduct:', testProduct);
-      },
+          },
 
       initData: function () {
         const thisApp = this;
@@ -129,7 +128,7 @@
         console.log('thisApp.data:', thisApp.data);
         for (let productData in thisApp.data.products) {
           new Product(productData, thisApp.data.products[productData]);
-        };
+        }
       },
 
       init: function () {
@@ -142,9 +141,8 @@
 
         thisApp.initData();
         thisApp.initMenu();
-        thisApp.initAccordion();
       },
     };
-  }
+  app.init();
 }
-app.init();
+
