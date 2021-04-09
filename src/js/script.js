@@ -149,6 +149,8 @@
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
+        this.addToCart();
+
       });
     }
   
@@ -174,7 +176,7 @@
           if (ifchecked) {
             if (!this.params[param]) {
               this.params[param] = {
-                label: params[param].lbel,
+                label: params[param].label,
                 options: {},
               };
             }
@@ -206,6 +208,11 @@
       
       thisProduct.amountWidget = new amountWidget(thisProduct.amountWidgetElem);
     }
+
+    addToCart() {
+      const thisProduct = this;
+      app.cart.add(thisProduct);
+    }
   }
 
   class amountWidget {
@@ -230,11 +237,24 @@
     setValue(value) {
       const thisWidget = this;
       const newValue = parseInt(value);
+      const condition =
+      (newValue !== this.getValue) &&
+        this.isValid(newValue);
+      if (condition) {
+      this._correctValue = newValue;
+      this.announce();
+    }
+    this.renderValue();
+  }
+    get value() {
+      return this._correctValue;
+    };
+      
       /*TODO add validation */
       thisWidget.value = newValue;
       thisWidget.announce();
       thisWidget.Input.value = thisWidget.value;
-    }
+  };
 
     initActions() {
       const thisWidget = this;
@@ -261,12 +281,54 @@
       thisWidget.element.dispatchEvent(event);
     }
   }
+class Cart{
+constructor(element){
+  const thisCart = this;
+
+  thisCart.products = [];
+
+  thisCart.getElements(element);
+  //console.log('new Cart', thisCart);
+}
+  
+  getElements(element) {
+    const thisCart = this;
+
+    thisCart.dom = {};
+
+    thisCart.dom.wrapper = element;
+
+    thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(
+      select.cart.toggleTrigger);
+  
+  }
+  initActions() {
+    const thisCart = this;
+
+    thisCart.dom.toggleTrigger.addEventListener('click', function () {
+      thisCart.dom.wrapper.classList.toggle(
+        classNames.cart.wrapperActive
+      );
+    });
+  }
+
+  add(menuProduct) {
+    // const thisCart = this;
+
+    console.log('adding product', menuProduct);
+    
+  }
+}
   const app = {
     initMenu: function () {
       const testProduct = new Product();
       //console.log('testProduct:, testProduct');
     },
 
+    initCart: function () {
+      const cartElem = document.querySelector(select.containerOf.cart);
+      this.cart = new Cart(cartElem);
+    },
     initData: function () {
       const thisApp = this;
 
