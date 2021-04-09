@@ -21,6 +21,7 @@
       imageWrapper: '.product__images',
       amountWidget: '.widget-amount',
       cartButton: '[href="#add-to-cart"]',
+      activeProducts: '.product.active',
     },
     widgets: {
       amount: {
@@ -59,9 +60,12 @@
 
       thisProduct.renderInMenu();
       thisProduct.initAccordion();
-      console.log('new Product:', thisProduct);
+      thisProduct.getElements();
+      thisProduct.initOrderForm();
+      thisProduct.processOrder();
+      thisProduct.amountWidget();
+      //console.log('new Product:', thisProduct);
     }
-  }
   
     renderInMenu() {
       const thisProduct = this;
@@ -77,12 +81,22 @@
       /*add element to menu*/
       MenuContainer.appendChild(thisProduct.element);
     }
-     
-    initAccordion() {
+
+    getElements() {
       const thisProduct = this;
 
+      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
+      thisProduct.form = thisProduct.element.querySelector(select.menuProduct.form);
+      thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
+      thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
+      thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
+    }
+    
+    initAccordion() {
+
       /* find the clickable trigger (the element that should react to clicking) */
-      this.initAccordion = thisProduct(select.menuProduct.clickable);
+      const clickedMenuProduct.initAccordion = this.element.querySelector(select.menuProduct.clickable);
 
       /* START: click event listener to trigger */
       accordionTrigger.addEventListener('click', this.initAccordion);
@@ -90,59 +104,212 @@
       /* prevent default action for event */
       const clickableTrigger = function (event) {
         event.preventDefault();
-        console.log('Link was clicked!');
+        console.log('Link was clicked')
+      }
 
-        /* toggle active class on element of thisProduct */
-        thisProduct.element.classList.toggle('active');
+      /* toggle active class on element of thisProduct */
+      thisProduct.element.classList.toggle('active');
 
-        /* find all active products */
-        const menuProductsActive = thisProduct.element;
+      /* find all active products */
+      const menuProductsActive = thisProduct.element;
 
-        /* START LOOP: for each active product */
-        for (let activeProduct of activeProducts) {
-          if (!activeProducts[thisProduct.element]) {
-            activeProducts.classList.remove('active');
-          }
+      /* START LOOP: for each active product */
+      for (let activeProduct of activeProducts) {
+        if (!activeProducts[thisProduct.element]) {
+          activeProducts.classList.remove('active');
+        }
            
-        };
-        /* START: if the active product isn't the element of thisProduct */
-
-        /* remove class active for the active product */
-
-        /* END: if the active product isn't the element of thisProduct */
-
-        /* END LOOP: for each active product */
-
-        /* END: click event listener to trigger */
       };
+      /* START: if the active product isn't the element of thisProduct */
+
+      /* remove class active for the active product */
+
+      /* END: if the active product isn't the element of thisProduct */
+
+      /* END LOOP: for each active product */
+
+      /* END: click event listener to trigger */
     }
   
-    const app = {
-      initMenu: function () {
-          },
+    initOrderForm() {
+      const thisProduct = this;
+      //console.log('initOrderForm');
 
-      initData: function () {
-        const thisApp = this;
+      thisProduct.form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
 
-        thisApp.data = dataSource;
-        console.log('thisApp.data:', thisApp.data);
-        for (let productData in thisApp.data.products) {
-          new Product(productData, thisApp.data.products[productData]);
+      for (let input of thisProduct.formInputs) {
+        input.addEventListener('change', function () {
+          thisProduct.processOrder();
+        });
+      }
+
+      thisProduct.cartButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisProduct.processOrder();
+      });
+    }
+  
+    processOrder() { 
+      const thisProduct = this;
+      const formData = utils.serializeFormToObject(thisProduct.form);
+      //console.log('formData', formData);
+
+      this.params = {};
+      let price = thisProduct.data.params;
+
+      for (let params in params) {
+
+        const options = params[param].options;
+        for (let option in options) {
+          const ifChecked = formData.hasOwnProperty(param) && formData[param].includes(options);
+          const ifDeflaut = options[option].hasOwnProperty('deflaut') && options(option).deflaut;
+          if (ifChecked && !ifDeflaut) {
+            price += options[option].price;
+          } else if (!ifChecked && ifDeflaut) {
+            price -= options[option].price;
+          }
+          if (ifchecked) {
+            if (!this.params[param]) {
+              this.params[param] = {
+                label: params[param].lbel,
+                options: {},
+              };
+            }
+            this.params[param].options[option] = options[option].label;
+          }
+          const image = thisimageWrapper.querySelector(' .${param}- ${option}');
+          if (image) {
+            ifChecked ?
+              image.classList.add(classNames.menuProduct.imageVisible) :
+              image.classList.remove(classNames.menuProduct.imageVisible);
+          }
         }
-      },
 
-      init: function () {
-        const thisApp = this;
-        console.log('*** App starting ***');
-        console.log('thisApp:', thisApp);
-        console.log('classNames:', classNames);
-        console.log('settings:', settings);
-        console.log('templates:', templates);
+      }
+      this.priceSingle = price;
+      price = thisProduct.amountWidget.value
+      this.price = this.priceSingle * this.AmountWidget.value;
+      this.priceElem.innerHTML = this.price;
 
-        thisApp.initData();
-        thisApp.initMenu();
-      },
-    };
+    }
+    initAmountWidget() {
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+
+      thisProduct.amountWidgetElem.addEventListener('updated', function () {
+        thisProduct.processOrder();
+      })
+      
+      thisProduct.amountWidget = new amountWidget(thisProduct.amountWidgetElem);
+    }
+  }
+
+  class amountWidget {
+    constructor(element) {
+      const thisWidget = this;
+
+      thisWidget.getElements(element);
+      //console.log('AmountWidget:', thisWidget);
+      //console.log('constructor arguments:', element);
+    }
+
+    getElements(element) {
+      const thisWidget = this;
+
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+      thisWidget.setValue(thisWidget.input.value);
+    }
+
+    setValue(value) {
+      const thisWidget = this;
+      const newValue = parseInt(value);
+      /*TODO add validation */
+      thisWidget.value = newValue;
+      thisWidget.announce();
+      thisWidget.Input.value = thisWidget.value;
+    }
+
+    initActions() {
+      const thisWidget = this;
+
+      thisWidget.input.addEventListener('change', function (event) {
+        event.preventDeflaut();
+        thisWidget.setValue = thisWidget.input.value;
+      });
+
+      thisWidget.linkDecrease.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.setValue = --thisWidget.value;
+      });
+
+      thisWidget.linkIncrease.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.setValue = ++thisWidget.value
+      });
+    }
+    announce() {
+      const thisWidget = this;
+
+      const event = new Even('updated');
+      thisWidget.element.dispatchEvent(event);
+    }
+  }
+  const app = {
+    initMenu: function () {
+      const testProduct = new Product();
+      //console.log('testProduct:, testProduct');
+    },
+
+    initData: function () {
+      const thisApp = this;
+
+      thisApp.data = dataSource;
+      //console.log('thisApp.data:', thisApp.data);
+      for (let productData in thisApp.data.products) {
+        new Product(productData, thisApp.data.products[productData]);
+      }
+    },
+
+    init: function () {
+      const thisApp = this;
+      //console.log('*** App starting ***');
+      //console.log('thisApp:', thisApp);
+      //console.log('classNames:', classNames);
+      //console.log('settings:', settings);
+      //console.log('templates:', templates);
+
+      thisApp.initData();
+      thisApp.initMenu();
+    },
+  };
+  utils.serializeFormToObject = function (form) {
+    let output = {}
+    if (typeof form == 'object' && form.nodeName == 'FORM') {
+      for (let field of form.elements) {
+        if (field.name && !field.disabled && field.type != 'file' && field.type != 'submit' && field.type != 'button') {
+          if (field.type == 'select-multiple') {
+            for (let option of field.options) {
+              if (option.selected) {
+                utils.createPropIfUnderfined(output, field.name);
+                output[field.name].push(field.value);
+              }
+            }
+          } else if ((field.type != 'checkbox' && field.type != 'radio') || field.checked) {
+            utils.createPropIfUnderfined(output, field.name);
+            output[field.name].push(field.value);
+          }
+        }
+      }
+    }
+    return output;
+
+  };
   app.init();
 }
-
