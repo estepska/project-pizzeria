@@ -61,9 +61,10 @@
       thisProduct.renderInMenu();
       thisProduct.initAccordion();
       thisProduct.getElements();
+      thisProduct.amountWidget();
       thisProduct.initOrderForm();
       thisProduct.processOrder();
-      thisProduct.amountWidget();
+      
       //console.log('new Product:', thisProduct);
     }
   
@@ -97,10 +98,9 @@
 
       /* find the clickable trigger (the element that should react to clicking) */
       const thisProduct = this;
-      thisProduct.accordionTrigger = thisProduct.element.querySelector(select.menuProduct.clickable);
 
       /* START: click event listener to trigger */
-        thisProduct.accordionTrigger.addEventListener('click', function (event) {
+      thisProduct.accordionTrigger.addEventListener('click', function (event) {
       /* prevent default action for event */
         event.preventDefault();
         console.log('Link was clicked')
@@ -112,16 +112,16 @@
         /* START LOOP: for each active product */
         for (let activeProduct of activeProducts) {
           /* START: if the active product isn't the element of thisProduct */
-          if (activeProducts thisProduct.element) {
+          if (activeProducts !== thisProduct.element) {
           /* remove class active for the active product */
-            activeProducts.classList.remove('active');
+            activeProduct.classList.remove('active');
           /* END: if the active product isn't the element of thisProduct */
           }
         /* END LOOP: for each active product */
         }
         /* END: click event listener to trigger */ /* END: click event listener to trigger */
       });
-  }
+    }
   
   
     initOrderForm() {
@@ -145,7 +145,7 @@
       });
     }
   
-    processOrder() { 
+    processOrder()  {
       const thisProduct = this;
       const formData = utils.serializeFormToObject(thisProduct.form);
       //console.log('formData', formData);
@@ -165,7 +165,7 @@
           } else if (!ifChecked && ifDeflaut) {
             price -= options[option].price;
           }
-          if (ifchecked) {
+          if (ifChecked) {
             if (!this.params[param]) {
               this.params[param] = {
                 label: thisProduct.data.params[param].label,
@@ -174,7 +174,7 @@
             }
             this.params[param].options[option] = options[option].label;
           }
-          const image = thisProduct.element.querySelector(' .${param}- ${option}');
+          const image = thisProduct.element.querySelector(`.${param}-${option}`);
           if (image) {
             ifChecked ?
               image.classList.add(classNames.menuProduct.imageVisible) :
@@ -184,7 +184,7 @@
 
       }
       this.priceSingle = price;
-      this.price = this.priceSingle 
+      this.price = this.priceSingle;
       this.priceElem.innerHTML = this.price;
 
     }
@@ -228,15 +228,14 @@
 
     setValue(value) {
       const thisWidget = this;
-      const newValue = perseInt(value);
+      const newValue = parseInt(value);
       
-      /*const dataMinValue = this.dom.wpapper.getAttribute(settings.amountWidget.defaultMinAttribut) || settings.amountWidget.defaultMin;
-      const dataMaxValue = this.dom.wpapper.getAttribute(settings.amountWidget.defaultMaxAttribut) || settings.amountWidget.defaultMax;*/
+      
 
       thisWidget.value = newValue;
       thisWidget.announce();
       thisWidget.input.value = thisWidget.value;
-      }
+    }
 
     initActions() {
       const thisWidget = this;
