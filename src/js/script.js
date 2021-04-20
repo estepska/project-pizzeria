@@ -103,7 +103,7 @@
       thisProduct.accordionTrigger.addEventListener('click', function (event) {
       /* prevent default action for event */
         event.preventDefault();
-        console.log('Link was clicked')
+        console.log('Link was clicked');
 
         /* toggle active class on element of thisProduct */
         thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);
@@ -196,9 +196,9 @@
 
       thisProduct.amountWidgetElem.addEventListener('updated', function () {
         thisProduct.processOrder();
-      })
+      });
       
-      thisProduct.amountWidget = new amountWidget(thisProduct.amountWidgetElem);
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
     }
     
   }
@@ -252,13 +252,13 @@
 
       thisWidget.linkIncrease.addEventListener('click', function (event) {
         event.preventDefault();
-        thisWidget.setValue = ++thisWidget.value
+        thisWidget.setValue = ++thisWidget.value;
       });
     }
     announce() {
       const thisWidget = this;
 
-      const event = new Even('updated');
+      const event = new Event('updated');
       thisWidget.element.dispatchEvent(event);
     }
   }
@@ -278,41 +278,41 @@
       thisCart.dom.wrapper = element;
     }
   }
-const app = {
-  initMenu: function () {
-    const testProduct = new Product();
-    //console.log('testProduct:, testProduct');
-  },
+  const app = {
+    initMenu: function () {
+      //const testProduct = new Product();
+      //console.log('testProduct:, testProduct');
+    },
 
-  initCart: function () {
-    const thisApp = this;
-    const cartElem = document.querySelector(select.containerOf.cart);
-    thisApp.cart = new Cart(cartElem);
+    initCart: function () {
+      const thisApp = this;
+      const cartElem = document.querySelector(select.containerOf.cart);
+      thisApp.cart = new Cart(cartElem);
 
-  },
+    },
 
-  initData: function () {
-    const thisApp = this;
+    initData: function () {
+      const thisApp = this;
 
-    thisApp.data = dataSource;
-    //console.log('thisApp.data:', thisApp.data);
-    for (let productData in thisApp.data.products) {
-      new Product(productData, thisApp.data.products[productData]);
-    }
-  },
+      thisApp.data = dataSource;
+      //console.log('thisApp.data:', thisApp.data);
+      for (let productData in thisApp.data.products) {
+        new Product(productData, thisApp.data.products[productData]);
+      }
+    },
 
-  init: function () {
-    const thisApp = this;
-    //console.log('*** App starting ***');
-    //console.log('thisApp:', thisApp);
-    //console.log('classNames:', classNames);
-    //console.log('settings:', settings);
-    //console.log('templates:', templates);
+    init: function () {
+      const thisApp = this;
+      //console.log('*** App starting ***');
+      //console.log('thisApp:', thisApp);
+      //console.log('classNames:', classNames);
+      //console.log('settings:', settings);
+      //console.log('templates:', templates);
 
-    thisApp.initData();
-    thisApp.initMenu();
-    thisApp.initCart();
-  },
-}
+      thisApp.initData();
+      thisApp.initMenu();
+      thisApp.initCart();
+    },
+  };
   app.init();
 }
