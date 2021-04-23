@@ -59,8 +59,8 @@
       thisProduct.data = data;
 
       thisProduct.renderInMenu();
-      thisProduct.initAccordion();
       thisProduct.getElements();
+      thisProduct.initAccordion();
       thisProduct.amountWidget();
       thisProduct.initOrderForm();
       thisProduct.processOrder();
