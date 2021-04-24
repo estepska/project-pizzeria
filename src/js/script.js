@@ -1,9 +1,10 @@
-/*global Handlebars, utils, dataSource */ // eslint-disable-line no-unused-vars*/
+/*global Handlebars, utils, */ // eslint-disable-line no-unused-vars*/
 {
   'use strict';
   const select = {
     templateOf: {
       menuProduct: '#template-menu-product',
+      cartProduct: '#template-cart-product', // CODE ADDED
     },
     containerOf: {
       menu: '#product-list',
@@ -21,15 +22,34 @@
       imageWrapper: '.product__images',
       amountWidget: '.widget-amount',
       cartButton: '[href="#add-to-cart"]',
-      activeProducts: '.product.active',
     },
     widgets: {
       amount: {
-        input: 'input[name="amount"]',
+        input: 'input.amount', // CODE CHANGED
         linkDecrease: 'a[href="#less"]',
         linkIncrease: 'a[href="#more"]',
-      }
+      },
     },
+    // CODE ADDED START
+    cart: {
+      productList: '.cart__order-summary',
+      toggleTrigger: '.cart__summary',
+      totalNumber: `.cart__total-number`,
+      totalPrice: '.cart__total-price strong, .cart__order-total .cart__order-price-sum strong',
+      subtotalPrice: '.cart__order-subtotal .cart__order-price-sum strong',
+      deliveryFee: '.cart__order-delivery .cart__order-price-sum strong',
+      form: '.cart__order',
+      formSubmit: '.cart__order [type="submit"]',
+      phone: '[name="phone"]',
+      address: '[name="address"]',
+    },
+    cartProduct: {
+      amountWidget: '.widget-amount',
+      price: '.cart__product-price',
+      edit: '[href="#edit"]',
+      remove: '[href="#remove"]',
+    },
+  // CODE ADDED END
   };
 
   const classNames = {
@@ -37,6 +57,11 @@
       wrapperActive: 'active',
       imageVisible: 'active',
     },
+    // CODE ADDED START
+    cart: {
+      wrapperActive: 'active',
+    },
+  // CODE ADDED END
   };
 
   const settings = {
@@ -44,18 +69,20 @@
       defaultValue: 1,
       defaultMin: 1,
       defaultMax: 9,
-    }
-  db: {
-  url: '//localhost:3131',
-  product: 'product',
-  order: 'order',
-},
-  };
-  
-  const templates = {
-    menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
+    }, // CODE CHANGED
+    // CODE ADDED START
+    cart: {
+      defaultDeliveryFee: 20,
+    },
+  // CODE ADDED END
   };
 
+  const templates = {
+    menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
+    // CODE ADDED START
+    cartProduct: Handlebars.compile(document.querySelector(select.templateOf.cartProduct).innerHTML),
+    // CODE ADDED END
+  };
   class Product {
     constructor(id, data) {
       const thisProduct = this;
@@ -303,29 +330,24 @@
     
     }
 
-     initActions() {
-    const thisCart = this;
+    initActions() {
+      const thisCart = this;
 
-    thisCart.dom.toggleTrigger.addEventListener('click', function () {
-      thisCart.dom.wrapper.classList.toggle(
-        classNames.cart.wrapperActive
-      );
-    });
+      thisCart.dom.toggleTrigger.addEventListener('click', function () {
+        thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
+      });
+      thisCart.dom.productList.addEventListener('updated', function () {
+        thisCart.update();
+      });
+      thisCart.dom.productList.addEventListener('remove', function () {
+        thisCart.remove(event.detail.cartProduct);
+      });
+      thisCart.dom.from.addEventListener('submit', function (event) {
+        event.preventDefault();
 
-    thisCart.dom.productList.addEventListener('updated', function () {
-      thisCart.update();
-    });
-
-    thisCart.dom.productList.addEventListener('remove', function () {
-      thisCart.remove(event.detail.cartProduct);
-    });
-
-    thisCart.dom.from.addEventListener('submit', function (event) {
-      event.preventDefault();
-
-      thisCart.sendOrder();
-    });
-  }
+        thisCart.sendOrder();
+      });
+    }
 
     add(menuProduct) {
       
@@ -387,12 +409,12 @@
         payload.products.push(product.getData());
       }
       const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    };
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      };
 
       fetch(url, options)
         .then(function (response) {
@@ -401,7 +423,6 @@
 
     }
   }
-    
 
   class CartProduct{
     constructor(menuProduct, element) {
@@ -470,33 +491,30 @@
   const app = {
     initMenu: function () {
       const thisApp = this;
-
-    for (let productData in thisApp.data.products) {
-      new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
-    }
+      for (let productData in thisApp.data.products) {
+        new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
+      }
     },
-
     initCart: function () {
       const thisApp = this;
       const cartElem = document.querySelector(select.containerOf.cart);
       thisApp.cart = new Cart(cartElem);
 
     },
-
     initData: function () {
       const thisApp = this;
       thisApp.data = {};
       const url = settings.db.url + '/' + settings.db.product;
 
-    fetch(url)
-      .then(function (rawResponse) {
-        return rawResponse.json();
-      })
-      .then(function (parsedResponse) {
-        thisApp.data.products = parsedResponse;
-        thisApp.initMenu();
-      });
-  },
+      fetch(url)
+        .then(function (rawResponse) {
+          return rawResponse.json();
+        })
+        .then(function (parsedResponse) {
+          thisApp.data.products = parsedResponse;
+          thisApp.initMenu();
+        });
+    },
 
     init: function () {
       const thisApp = this;
