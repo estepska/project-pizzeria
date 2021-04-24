@@ -45,6 +45,11 @@
       defaultMin: 1,
       defaultMax: 9,
     }
+  db: {
+  url: '//localhost:3131',
+  product: 'product',
+  order: 'order',
+},
   };
   
   const templates = {
@@ -297,6 +302,31 @@
       }
     
     }
+
+     initActions() {
+    const thisCart = this;
+
+    thisCart.dom.toggleTrigger.addEventListener('click', function () {
+      thisCart.dom.wrapper.classList.toggle(
+        classNames.cart.wrapperActive
+      );
+    });
+
+    thisCart.dom.productList.addEventListener('updated', function () {
+      thisCart.update();
+    });
+
+    thisCart.dom.productList.addEventListener('remove', function () {
+      thisCart.remove(event.detail.cartProduct);
+    });
+
+    thisCart.dom.from.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      thisCart.sendOrder();
+    });
+  }
+
     add(menuProduct) {
       
       /* generate html */
@@ -407,8 +437,11 @@
   }
   const app = {
     initMenu: function () {
-      //const testProduct = new Product();
-      //console.log('testProduct:, testProduct');
+      const thisApp = this;
+
+    for (let productData in thisApp.data.products) {
+      new Product(thisApp.data.products[productData].id, thisApp.data.products[productData]);
+    }
     },
 
     initCart: function () {
@@ -420,13 +453,18 @@
 
     initData: function () {
       const thisApp = this;
+      thisApp.data = {};
+      const url = settings.db.url + '/' + settings.db.product;
 
-      thisApp.data = dataSource;
-      //console.log('thisApp.data:', thisApp.data);
-      for (let productData in thisApp.data.products) {
-        new Product(productData, thisApp.data.products[productData]);
-      }
-    },
+    fetch(url)
+      .then(function (rawResponse) {
+        return rawResponse.json();
+      })
+      .then(function (parsedResponse) {
+        thisApp.data.products = parsedResponse;
+        thisApp.initMenu();
+      });
+  },
 
     init: function () {
       const thisApp = this;
@@ -437,7 +475,6 @@
       //console.log('templates:', templates);
 
       thisApp.initData();
-      thisApp.initMenu();
       thisApp.initCart();
     },
   };
