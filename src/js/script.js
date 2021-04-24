@@ -369,7 +369,39 @@
       cartProduct.dom.wrapper.remove();
       thisCart.update();
     }
+    sendOrder() {
+      const thisCart = this;
+      const url = settings.db.url + '/' + settings.db.order;
+
+      const payload = {
+        phone: thisCart.phone.value,
+        address: thisCart.address.value,
+        totalNumber: thisCart.totalNumber,
+        subtotalPrice: thisCart.subtotalPrice,
+        totalPrice: thisCart.totalPrice,
+        deliveryFee: thisCart.deliveryFee,
+        products: []
+      };
+
+      for (let product of thisCart.products) {
+        payload.products.push(product.getData());
+      }
+      const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    };
+
+      fetch(url, options)
+        .then(function (response) {
+          return response.json();
+        });
+
+    }
   }
+    
 
   class CartProduct{
     constructor(menuProduct, element) {
