@@ -109,10 +109,10 @@
       thisProduct.element = utils.createDOMFromHTML(generatedHTML);
 
       /*find menu container*/
-      const MenuContainer = document.querySelector(select.containerOf.menu);
+      const menuContainer = document.querySelector(select.containerOf.menu);
 
       /*add element to menu*/
-      MenuContainer.appendChild(thisProduct.element);
+      menuContainer.appendChild(thisProduct.element);
     }
 
     getElements() {
@@ -144,7 +144,7 @@
         /* START LOOP: for each active product */
         for (let activeProduct of activeProducts) {
           /* START: if the active product isn't the element of thisProduct */
-          if (activeProducts !== thisProduct.element) {
+          if (activeProduct !== thisProduct.element) {
           /* remove class active for the active product */
             activeProduct.classList.remove('active');
           /* END: if the active product isn't the element of thisProduct */
@@ -248,64 +248,58 @@
       thisWidget.getElements(element);
       //console.log('AmountWidget:', thisWidget);
       //console.log('constructor arguments:', element);
-      thisWidget.setValue(thisWidget.input.value);
+      thisWidget.value = settings.amountWidget.defaultValue;
     }
-    
 
-    getElements(element) {
+    getElements(element){
       const thisWidget = this;
 
       thisWidget.element = element;
       thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
       thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
       thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+      thisWidget.value = settings.amountWidget.defaultValue;
       thisWidget.setValue(thisWidget.input.value);
     }
-
-    
 
     setValue(value) {
       const thisWidget = this;
       const newValue = parseInt(value);
       
-      
-
-      thisWidget.value = newValue;
+      if (!isNaN(newValue)) {
+        thisWidget.value = newValue;
+      }
       thisWidget.announce();
       thisWidget.input.value = thisWidget.value;
     }
 
     initActions() {
-      const thisCart = this;
-      thisCart.dom.toggleTrigger.addEventListener('click', function () {
-        thisCart.dom.wrapper.classList.toggle(
-          classNames.cart.wrapperActive
-        );
-      });
+      const thisWidget = this;
 
-      thisCart.dom.productList.addEventListener('updated', function () {
-        thisCart.update();
-      });
-
-      thisCart.dom.productList.addEventListener('remove', function () {
-        thisCart.remove(event.detail.cartProduct);
-      });
-
-      thisCart.dom.from.addEventListener('submit', function (event) {
+      thisWidget.dom.input.addEventListener('change', function (event) {
         event.preventDefault();
+        thisWidget.value = thisWidget.dom.input.value;
+      });
 
-      
+      thisWidget.dom.linkDecrease.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.value = --thisWidget.dom.input.value;
+      });
+
+      thisWidget.dom.linkIncrease.addEventListener('click', function (event) {
+        event.preventDefault();
+        thisWidget.value = ++thisWidget.dom.input.value;
       });
     }
+
     announce() {
       const thisWidget = this;
 
-      const event = new CustomEvent('updated', {
-        bubbles: true
-      });
+      const event = new Event('updated');
       thisWidget.element.dispatchEvent(event);
     }
   }
+   
   class Cart {
     constructor(element) {
       const thisCart = this;
@@ -326,8 +320,7 @@
 
       for(let key of thisCart.renderTotalsKeys){
         thisCart.dom[key] = thisCart.dom.wrapper.querySelectorAll(select.cart[key]);
-      }
-    
+      } 
     }
 
     initActions() {
@@ -514,7 +507,7 @@
           thisApp.data.products = parsedResponse;
           thisApp.initMenu();
         });
-    },
+    }, 
 
     init: function () {
       const thisApp = this;
@@ -528,5 +521,8 @@
       thisApp.initCart();
     },
   };
+
   app.init();
+  
 }
+
