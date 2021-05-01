@@ -146,7 +146,7 @@
           /* START: if the active product isn't the element of thisProduct */
           if (activeProduct !== thisProduct.element) {
           /* remove class active for the active product */
-            activeProduct.classList.remove('active');
+            activeProducts.classList.remove('active');
           /* END: if the active product isn't the element of thisProduct */
           }
         /* END LOOP: for each active product */
