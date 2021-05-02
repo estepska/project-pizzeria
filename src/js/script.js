@@ -146,7 +146,7 @@
           /* START: if the active product isn't the element of thisProduct */
           if (activeProduct !== thisProduct.element) {
           /* remove class active for the active product */
-            activeProducts.classList.remove('active');
+            activeProduct.classList.remove('active');
           /* END: if the active product isn't the element of thisProduct */
           }
         /* END LOOP: for each active product */
@@ -335,7 +335,7 @@
       thisCart.dom.productList.addEventListener('remove', function () {
         thisCart.remove(event.detail.cartProduct);
       });
-      thisCart.dom.from.addEventListener('submit', function (event) {
+      thisCart.dom.form.addEventListener('submit', function (event) {
         event.preventDefault();
 
         thisCart.sendOrder();
