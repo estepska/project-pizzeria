@@ -262,9 +262,9 @@
       const thisWidget = this;
       thisWidget.dom = {};
       thisWidget.dom = element;
-      thisWidget.dom.input = thisWidget.element.querySelector(select.widgets.amount.input);
-      thisWidget.dom.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
-      thisWidget.dom.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+      thisWidget.dom.input = thisWidget.dom.querySelector(select.widgets.amount.input);
+      thisWidget.dom.linkDecrease = thisWidget.dom.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.dom.linkIncrease = thisWidget.dom.querySelector(select.widgets.amount.linkIncrease);
       thisWidget.dom.value = settings.amountWidget.defaultValue;
       thisWidget.setValue(thisWidget.dom.input.value);
     }
@@ -290,12 +290,12 @@
 
       thisWidget.dom.linkDecrease.addEventListener('click', function (event) {
         event.preventDefault();
-        thisWidget.value(thisWidget.value + 1);
+        thisWidget.value(thisWidget.value -1);
       });
 
       thisWidget.dom.linkIncrease.addEventListener('click', function (event) {
         event.preventDefault();
-        thisWidget.setValue(thisWidget.value - 1);
+        thisWidget.setValue(thisWidget.value +1);
       });
     }
 
@@ -303,7 +303,7 @@
       const thisWidget = this;
 
       const event = new Event('updated');
-      thisWidget.element.dispatchEvent(event);
+      thisWidget.dom.dispatchEvent(event);
     }
   }
    
